@@ -1,0 +1,24 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  schema: "thelook_ecommerce_launch_demo"
+}
+
+CREATE OR REPLACE EXTERNAL TABLE ${self()}
+(
+  id INTEGER,
+  order_id INTEGER,
+  user_id INTEGER,
+  product_id INTEGER,
+  inventory_item_id INTEGER,
+  status STRING,
+  created_at TIMESTAMP,
+  shipped_at TIMESTAMP,
+  delivered_at TIMESTAMP,
+  returned_at TIMESTAMP,
+  sale_price FLOAT64
+)
+OPTIONS (
+  format = "AVRO",
+  uris = ["gs://dea_end2end_demo/order_items.avro"]
+)

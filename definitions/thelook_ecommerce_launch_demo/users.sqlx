@@ -1,0 +1,29 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  schema: "thelook_ecommerce_launch_demo"
+}
+
+CREATE OR REPLACE EXTERNAL TABLE ${self()}
+(
+  user_geom STRING,
+  created_at TIMESTAMP,
+  longitude FLOAT64,
+  latitude FLOAT64,
+  gender STRING,
+  country STRING,
+  traffic_source STRING,
+  postal_code STRING,
+  first_name STRING,
+  state STRING,
+  street_address STRING,
+  age INTEGER,
+  email STRING,
+  last_name STRING,
+  city STRING,
+  id INTEGER
+)
+OPTIONS (
+  format = "JSON",
+  uris = ["gs://dea_end2end_demo/users.json"]
+)

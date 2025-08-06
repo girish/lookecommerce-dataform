@@ -1,4 +1,4 @@
-dataformCoreVersion: 3.0.16
+dataformCoreVersion: 3.0.26
 defaultProject: bq-dataworkeragent-test
 defaultDataset: dataform
 defaultLocation: us-west2
