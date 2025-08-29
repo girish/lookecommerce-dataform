@@ -1,0 +1,23 @@
+config {
+ type: "operations",
+ hasOutput: true,
+ schema: "thelook_ecommerce_launch_demo"
+}
+
+CREATE OR REPLACE EXTERNAL TABLE ${self()}
+(
+  order_id INTEGER,
+  user_id INTEGER,
+  status STRING,
+  gender STRING,
+  created_at TIMESTAMP,
+  returned_at TIMESTAMP,
+  shipped_at TIMESTAMP,
+  delivered_at TIMESTAMP,
+  num_of_item INTEGER
+)
+OPTIONS (
+ format = "CSV",
+ uris = ["gs://dea_end2end_demo/orders.csv"],
+ skip_leading_rows = 1
+)
