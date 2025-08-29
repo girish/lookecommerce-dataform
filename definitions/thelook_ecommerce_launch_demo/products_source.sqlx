@@ -1,0 +1,22 @@
+config {
+ type: "operations",
+ hasOutput: true,
+ schema: "thelook_ecommerce_launch_demo"
+}
+
+CREATE OR REPLACE EXTERNAL TABLE ${self()}
+(
+  id INTEGER,
+  cost FLOAT64,
+  category STRING,
+  name STRING,
+  brand STRING,
+  retail_price FLOAT64,
+  department STRING,
+  sku STRING,
+  distribution_center_id INTEGER
+)
+OPTIONS (
+ format = "PARQUET",
+ uris = ["gs://dea_end2end_demo/products.parquet"]
+)

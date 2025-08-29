@@ -1,22 +1,36 @@
 config {
-  type: "operations",
-  hasOutput: true,
-  schema: "thelook_ecommerce_launch_demo"
+  type: "table",
+  schema: "thelook_ecommerce_launch_demo",
+  description: "Cleaned product data from thelook_ecommerce",
+  columns: {
+    id: "The unique ID of the product.",
+    cost: "The cost of the product.",
+    category: "The category of the product.",
+    name: "The name of the product.",
+    brand: "The brand of the product.",
+    retail_price: "The retail price of the product.",
+    department: "The department of the product.",
+    sku: "The SKU of the product.",
+    distribution_center_id: "The ID of the distribution center."
+  }
 }
 
-CREATE OR REPLACE EXTERNAL TABLE ${self()}
-(
-  id INTEGER,
-  cost FLOAT64,
-  category STRING,
-  name STRING,
-  brand STRING,
-  retail_price FLOAT64,
-  department STRING,
-  sku STRING,
-  distribution_center_id INTEGER
+WITH cleaned_products AS (
+  SELECT
+    CAST(id AS STRING) AS id,
+    cost,
+    category,
+    name,
+    COALESCE(brand, 'Unknown') AS brand,
+    retail_price,
+    department,
+    sku,
+    CAST(distribution_center_id AS STRING) AS distribution_center_id
+  FROM
+    ${ref("products_source")}
 )
-OPTIONS (
-  format = "PARQUET",
-  uris = ["gs://dea_end2end_demo/products.parquet"]
-)
+SELECT
+  *
+FROM
+  cleaned_products
+QUALIFY ROW_NUMBER() OVER (PARTITION BY id) = 1

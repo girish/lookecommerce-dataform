@@ -1,29 +1,48 @@
 config {
-  type: "operations",
-  hasOutput: true,
-  schema: "thelook_ecommerce_launch_demo"
+  type: "table",
+  schema: "thelook_ecommerce_launch_demo",
+  description: "Cleaned user data from thelook_ecommerce",
+  columns: {
+    id: "The unique ID of the user.",
+    first_name: "The user\'s first name.",
+    last_name: "The user\'s last name.",
+    email: "The user\'s email address.",
+    age: "The user\'s age.",
+    gender: "The user\'s gender.",
+    state: "The state where the user lives.",
+    street_address: "The user\'s street address.",
+    postal_code: "The user\'s postal code.",
+    city: "The city where the user lives.",
+    country: "The country where the user lives.",
+    latitude: "The latitude of the user\'s location.",
+    longitude: "The longitude of the user\'s location.",
+    traffic_source: "The source of the user\'s traffic.",
+    created_at: "The timestamp when the user was created."
+  }
 }
 
-CREATE OR REPLACE EXTERNAL TABLE ${self()}
-(
-  user_geom STRING,
-  created_at TIMESTAMP,
-  longitude FLOAT64,
-  latitude FLOAT64,
-  gender STRING,
-  country STRING,
-  traffic_source STRING,
-  postal_code STRING,
-  first_name STRING,
-  state STRING,
-  street_address STRING,
-  age INTEGER,
-  email STRING,
-  last_name STRING,
-  city STRING,
-  id INTEGER
+WITH cleaned_users AS (
+  SELECT
+    CAST(id AS STRING) AS id,
+    first_name,
+    last_name,
+    email,
+    age,
+    COALESCE(gender, 'Unknown') AS gender,
+    state,
+    street_address,
+    postal_code,
+    city,
+    country,
+    latitude,
+    longitude,
+    traffic_source,
+    created_at
+  FROM
+    ${ref("users_source")}
 )
-OPTIONS (
-  format = "JSON",
-  uris = ["gs://dea_end2end_demo/users.json"]
-)
+SELECT
+  *
+FROM
+  cleaned_users
+QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY created_at DESC) = 1
