@@ -1,5 +1,5 @@
 
-connection: "bigquery-public-data"
+connection: "default_bigquery_connection"
 
 include: "/lookml/*.view.lkml"
 
